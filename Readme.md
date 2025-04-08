@@ -11,7 +11,7 @@
 ### 我的刷机教程：[Tutorial](https://github.com/lgs2007m/Actions-OpenWrt/tree/main/Tutorial)
 ---
 
-## RAX3000M-eMMC/XR30-eMMC workflow 手动运行可选项：
+## HY3000 workflow 手动运行可选项：
 - Set LAN IP Address
 - Choose WiFi Driver
 - [x] Use nx30pro eeprom and fixed WiFi MAC address
