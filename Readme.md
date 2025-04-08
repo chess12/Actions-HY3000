@@ -1,14 +1,21 @@
-# 借助 GitHub Actions 的 OpenWrt 在线自动编译.
+# 借助 GitHub Actions 的 OpenWrt 在线自动编译
 
-#### hanwckf大佬mt798x闭源仓库- [hanwckf/immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x).
+复刻仓库，点击 Actions 按钮，选择 HY3000-hanwckf，点击 Run workflow 按钮，等待编译完成即可。
 
-#### 237大佬mt798x闭源仓库- [padavanonly/immortalwrt-mt798x](https://github.com/padavanonly/immortalwrt-mt798x).
+我的刷机教程：[飞利浦-ph-hy3000-探索](https://yuzhii0718.eu.org/2025/04/07/1/)
 
-#### hanwckf大佬mt798x uboot仓库- [hanwckf/bl-mt798x](https://github.com/hanwckf/bl-mt798x).
+原仓库 https://github.com/lgs2007m/Actions-OpenWrt
 
-### 刷砖也不怕！可以通过串口救砖：[MediaTek Filogic 系列路由器串口救砖教程](https://www.cnblogs.com/p123/p/18046679)
+---
 
-### 我的刷机教程：[Tutorial](https://github.com/lgs2007m/Actions-OpenWrt/tree/main/Tutorial)
+- hanwckf大佬mt798x闭源仓库- [hanwckf/immortalwrt-mt798x](https://github.com/hanwckf/immortalwrt-mt798x).
+
+- 237大佬mt798x闭源仓库- [padavanonly/immortalwrt-mt798x](https://github.com/padavanonly/immortalwrt-mt798x).
+
+- hanwckf大佬mt798x uboot仓库- [hanwckf/bl-mt798x](https://github.com/hanwckf/bl-mt798x).
+
+- 刷砖也不怕！可以通过串口救砖：[MediaTek Filogic 系列路由器串口救砖教程](https://www.cnblogs.com/p123/p/18046679)
+
 ---
 
 ## HY3000 workflow 手动运行可选项：

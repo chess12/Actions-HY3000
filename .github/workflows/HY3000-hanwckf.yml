@@ -143,7 +143,7 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
-    - name: 设置RAX3000M-eMMC的eMMC使用highspeed
+    - name: 设置HY3000的eMMC使用highspeed
       run: |
         cd openwrt
         if ! grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
