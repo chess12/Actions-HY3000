@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 ###############手动修改##############
-name: RAX3000M-eMMC_XR30-eMMC-hanwckf
+name: HY3000-hanwckf
 
 on:
   repository_dispatch:
@@ -65,13 +65,13 @@ env:
   ##因为是两个设备，所以手动设置上传时候的打包名称和tag名称UPLOAD_TAG_NAME
   OPENWRT_NAME: hanwckf
   UPLOAD_TAG_NAME: rax3000m-emmc_xr30-emmc
-  REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
+  REPO_URL: https://github.com/Yuzhii0718/immortalwrt-mt798x-philips-hy3000
   REPO_BRANCH: openwrt-21.02
-  FEEDS_CONF: RAX3000M-eMMC_XR30-eMMC-hanwckf/feeds.conf.default
-  RAX3000M_EMMC_DTS_FILE: target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-cmcc-rax3000m-emmc.dts
-  CONFIG_FILE: RAX3000M-eMMC_XR30-eMMC-hanwckf/.mtwifi-cfg.config
-  DIY_P1_SH: RAX3000M-eMMC_XR30-eMMC-hanwckf/diy-part1.sh
-  DIY_P2_SH: RAX3000M-eMMC_XR30-eMMC-hanwckf/diy-part2.sh
+  FEEDS_CONF: HY3000-hanwckf/feeds.conf.default
+  RAX3000M_EMMC_DTS_FILE: target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+  CONFIG_FILE: HY3000-hanwckf/.mtwifi-cfg.config
+  DIY_P1_SH: HY3000-hanwckf/diy-part1.sh
+  DIY_P2_SH: HY3000-hanwckf/diy-part2.sh
   SSH_ACTIONS: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -185,9 +185,9 @@ jobs:
         cd openwrt
         wifi_driver=$(echo "${{ github.event.inputs.WIFI_DRIVER }}" | sed -E 's/^(v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+).*/\1/')
         if [ "$wifi_driver" == "v7.6.6.1" ]; then
-                cp $GITHUB_WORKSPACE/RAX3000M-eMMC_XR30-eMMC-hanwckf/mt79xx_20220907-8b55f5_eeprom.tar.xz dl/mt79xx_20220907-8b55f5.tar.xz
+                cp $GITHUB_WORKSPACE/HY3000-hanwckf/mt79xx_20220907-8b55f5_eeprom.tar.xz dl/mt79xx_20220907-8b55f5.tar.xz
         else
-                cp $GITHUB_WORKSPACE/RAX3000M-eMMC_XR30-eMMC-hanwckf/mt79xx_20231229-4012a0_eeprom.tar.xz dl/mt79xx_20231229-4012a0.tar.xz
+                cp $GITHUB_WORKSPACE/HY3000-hanwckf/mt79xx_20231229-4012a0_eeprom.tar.xz dl/mt79xx_20231229-4012a0.tar.xz
         fi
         ## 创建一个辅助文件。文件内容是写入MAC地址到dat文件，固定wifi MAC地址
         echo -e "\t\tlocal wifi0_mac=\"\$(mmc_get_mac_binary factory 0x04)\"
