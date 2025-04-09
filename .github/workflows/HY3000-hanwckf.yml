@@ -331,6 +331,11 @@ jobs:
         else
                 echo "- 未编译luci-app-dockerman" >> release.txt
         fi
+        if [[ "${{ github.event.inputs.EMMC_SPEED }}" == 'true' ]]; then
+                echo "- eMMC使用highspeed" >> release.txt
+        else
+                echo "- eMMC使用26MHz" >> release.txt
+        fi
         echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.UPLOAD_TAG_NAME }}${{ env.WIFI_VERSION }}${{ env.EEPROM }}${{ env.BUILD_DOCKERMAN }}" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
