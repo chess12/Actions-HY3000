@@ -43,6 +43,11 @@ on:
         required: true
         default: true
         type: boolean
+      EMMC_SPEED:
+        description: 'Use eMMC highspeed'
+        required: true
+        default: true
+        type: boolean
       APP_MTK:
         description: 'Use luci-app-mtk wifi config'
         required: true
@@ -62,7 +67,6 @@ on:
 
 env:
   ###############手动修改##############
-  ##因为是两个设备，所以手动设置上传时候的打包名称和tag名称UPLOAD_TAG_NAME
   OPENWRT_NAME: hanwckf
   UPLOAD_TAG_NAME: philips-hy3000
   REPO_URL: https://github.com/Yuzhii0718/immortalwrt-mt798x-philips-hy3000
@@ -148,10 +152,22 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: 设置HY3000的eMMC使用highspeed
+      if: github.event.inputs.EMMC_SPEED == 'true'
       run: |
         cd openwrt
         if ! grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
                 sed -i -e '/bus-width = <8>;/ a\	cap-mmc-highspeed;' "${{ env.HY3000_DTS_FILE }}"
+        fi
+
+    - name: 设置HY3000的eMMC使用26MHz
+      if: github.event.inputs.EMMC_SPEED == 'false'
+      run: |
+        cd openwrt
+        if grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
+                sed -i -e '/cap-mmc-highspeed;/d' "${{ env.HY3000_DTS_FILE }}"
+        fi
+        if grep -q 'max-frequency = <52000000>;' "${{ env.HY3000_DTS_FILE }}"; then
+                sed -i -e 's/max-frequency = <52000000>; /max-frequency = <26000000>;/' "${{ env.HY3000_DTS_FILE }}"
         fi
 
     - name: 设置LAN IP地址（路由器登录地址）
