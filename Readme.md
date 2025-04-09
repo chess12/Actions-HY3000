@@ -26,11 +26,13 @@
 
 - #### 说明
 
-源码中的WAN、LAN地址顺序已修复
+Philips hy3000
 
-| 型号 | eMMC频率 | 备注 |
-| ---- | -------- | ---- |
-| HY3000M | 52MHz | 支持26MHz和52MHz频率 |
+CPU: [MT7981BA](https://www.edaltech.com/products/mediatek/mt7981ba-a.html)
+RAM: [1GB DDR4 SCY DP4DQ8C16FJB](https://www.shichuangyi.com/DRAMnacunmozu/21.html)
+ROM: [128GB eMMC SCY E128CYMT2ABE00](https://www.shichuangyi.com/qianrushicunchuxinpian/7.html)
+Switch: [MT7531AE](https://www.edaltech.com/products/mediatek/mt7531ae.html)
+RF: [MT7976CN](https://www.edaltech.com/products/mediatek/mt7976cn-b.html)
 
 - #### 1. Set LAN IP Address
 
