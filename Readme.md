@@ -20,6 +20,7 @@
 - Set LAN IP Address
 - Choose WiFi Driver
 - [x] Use nx30pro eeprom and fixed WiFi MAC address
+- [x] Use eMMC highspeed
 - [ ] Use luci-app-mtk wifi config
 - [ ] Not build luci-app-dockerman
 
@@ -39,9 +40,11 @@
 
 默认使用WiFi驱动版本v7.6.7.2-fw-20240823(recommend)。  
 
+[mtk-openwrt-feeds](https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/)
+
 mt_wifi的firmware可选，warp默认使用v7.6.7.2配套的warp_20231229-5f71ec，firmware用驱动自带的，不可选。  
 
-**【mt7981的机子上未测试，建议直接使用推荐的选项。】  **
+**【mt7981的机子上未测试，建议直接使用推荐的选项。】**
 
 根据网络和ChatGPT查询，我理解：  
 
@@ -90,7 +93,7 @@ strings /lib/firmware/7981_WOCPU0_RAM_CODE_release.bin | grep -E '202[0-9]{6}'
 | 无FEM | 23dBm | 22dBm |
 | NX30 PRO | 25dBm | 24dBm |
 
-开启该选项会使用NX30 PRO的eeprom替换掉固件中的MT7981_iPAiLNA_EEPROM.bin文件，并将facotry分区读取的MAC写入到dat以便固定WiFi MAC。  
+开启该选项会使用NX30 PRO的eeprom替换掉固件中的`MT7981_iPAiLNA_EEPROM.bin`文件，并将facotry分区读取的MAC写入到dat以便固定WiFi MAC。  
 
 - #### 4. Use luci-app-mtk wifi config
 
