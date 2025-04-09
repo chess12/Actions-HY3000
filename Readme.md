@@ -2,8 +2,6 @@
 
 复刻仓库，点击 Actions 按钮，选择 HY3000-hanwckf，点击 Run workflow 按钮，等待编译完成即可。
 
-我的刷机教程：[飞利浦-ph-hy3000-探索](https://yuzhii0718.eu.org/2025/04/07/1/)
-
 原仓库 https://github.com/lgs2007m/Actions-OpenWrt
 
 ---
