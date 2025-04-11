@@ -53,11 +53,6 @@ on:
         required: true
         default: true
         type: boolean
-      APP_MTK:
-        description: 'Use luci-app-mtk wifi config'
-        required: true
-        default: false
-        type: boolean
       DOCKERMAN:
         description: 'Build luci-app-dockerman'
         required: true
@@ -67,6 +62,11 @@ on:
         description: 'OPENCLASH'
         required: true
         default: true
+        type: boolean
+      APP_MTK:
+        description: 'Use luci-app-mtk wifi config'
+        required: true
+        default: false
         type: boolean
       ssh:
         description: 'SSH connection to Actions'
