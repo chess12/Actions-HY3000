@@ -48,6 +48,15 @@ on:
         required: true
         default: true
         type: boolean
+      USB:
+        description: 'Use USB Interface'
+        required: true
+        default: 'USB2'
+        type: choice
+        options:
+        - USB2
+        - disabled
+        - remove
       APP_MTK:
         description: 'Use luci-app-mtk wifi config'
         required: true
@@ -72,7 +81,8 @@ env:
   REPO_URL: https://github.com/Yuzhii0718/immortalwrt-mt798x-philips-hy3000
   REPO_BRANCH: openwrt-21.02
   FEEDS_CONF: HY3000-hanwckf/feeds.conf.default
-  HY3000_DTS_FILE: target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+  # HY3000_DTS_FILE: target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+  HY3000_DTS_FILE: HY3000_DTS/mt7981-philips-hy3000.dts
   CONFIG_FILE: HY3000-hanwckf/.mtwifi-cfg.config
   DIY_P1_SH: HY3000-hanwckf/diy-part1.sh
   DIY_P2_SH: HY3000-hanwckf/diy-part2.sh
@@ -198,6 +208,26 @@ jobs:
         	sed -i 's/CONFIG_MTK_MT_WIFI_MT7981_20240823=y/CONFIG_MTK_MT_WIFI_MT7981_${firmware}=y/g' .config
         fi
         echo "Use WiFi Driver: $wifi_driver-fw-$firmware"
+
+    - name: 设置USB接口
+      run: |
+          cd openwrt
+          if [ "${{ github.event.inputs.USB }}" == "USB2" ]; then
+            echo "使用默认 USB2 配置"
+          elif [ "${{ github.event.inputs.USB }}" == "disabled" ]; then
+            if grep -q 'status = "okay"' "${{ env.HY3000_DTS_FILE }}"; then
+              sed -i 's/status = "okay"/status = "disabled"/' "${{ env.HY3000_DTS_FILE }}"
+              echo "已禁用 USB 接口"
+            fi
+          elif [ "${{ github.event.inputs.USB }}" == "remove" ]; then
+            if grep -q '&xhci {' "${{ env.HY3000_DTS_FILE }}"; then
+              sed -i '/&xhci {/,/};/d' "${{ env.HY3000_DTS_FILE }}"
+              echo "已从设备树中移除 USB 接口"
+            fi
+          else
+            echo "使用默认 USB2 配置"
+          fi
+          echo "USB Interface: ${{ github.event.inputs.USB }}"
 
     - name: 使用nx30pro的高功率eeprom并固定WiFi MAC地址
       if: github.event.inputs.EEPROM == 'true'
