@@ -21,8 +21,9 @@
 - Choose WiFi Driver
 - [x] Use nx30pro eeprom and fixed WiFi MAC address
 - [x] Use eMMC highspeed
+- [x] Use USB Interface
 - [ ] Use luci-app-mtk wifi config
-- [ ] Not build luci-app-dockerman
+- [x] Build luci-app-dockerman
 
 - #### 说明
 

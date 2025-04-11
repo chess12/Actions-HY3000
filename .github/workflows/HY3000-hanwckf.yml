@@ -58,10 +58,10 @@ on:
         required: true
         default: false
         type: boolean
-      NO_DOCKERMAN:
-        description: 'Not build luci-app-dockerman'
+      DOCKERMAN:
+        description: 'Build luci-app-dockerman'
         required: true
-        default: false
+        default: true
         type: boolean
       OPENCLASH:
         description: 'OPENCLASH'
@@ -245,8 +245,8 @@ jobs:
         sed -i 's/CONFIG_PACKAGE_mtwifi-cfg=y/CONFIG_PACKAGE_wifi-profile=y/g' .config
         sed -i 's/CONFIG_PACKAGE_lua-cjson=y/CONFIG_WIFI_NORMAL_SETTING=y/g' .config
 
-    - name: 取消编译dockerman
-      if: github.event.inputs.NO_DOCKERMAN == 'true'
+    - name: 编译dockerman
+      if: github.event.inputs.DOCKERMAN == 'false'
       run: |
         cd openwrt
         sed -i '/CONFIG_PACKAGE_luci-app-dockerman=y/d' .config
