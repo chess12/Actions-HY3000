@@ -127,9 +127,17 @@ CONFIG_PACKAGE_luci-app-dockerman=y
 
 - #### 6. Use eMMC highspeed
 
-该选项默认启用，即使用eMMC的highspeed模式，默认 52MHz.
+该选项默认启用，即使用eMMC的highspeed模式，默认52MHz.
 
 关闭后则不使用eMMC的highspeed模式，使用26MHz。
+
+该功能未测试，保持默认即可。
+
+- #### 7. Use USB Interface
+
+该选项默认启用，即使用USB接口，默认USB2.0。
+
+关闭后则不使用USB接口，设置为`disabled`。
 
 该功能未测试，保持默认即可。
 

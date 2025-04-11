@@ -51,12 +51,8 @@ on:
       USB:
         description: 'Use USB Interface'
         required: true
-        default: 'USB2'
-        type: choice
-        options:
-        - USB2
-        - disabled
-        - remove
+        default: true
+        type: boolean
       APP_MTK:
         description: 'Use luci-app-mtk wifi config'
         required: true
@@ -66,6 +62,11 @@ on:
         description: 'Not build luci-app-dockerman'
         required: true
         default: false
+        type: boolean
+      OPENCLASH:
+        description: 'OPENCLASH'
+        required: true
+        default: true
         type: boolean
       ssh:
         description: 'SSH connection to Actions'
@@ -85,6 +86,7 @@ env:
   CONFIG_FILE: HY3000-hanwckf/.mtwifi-cfg.config
   DIY_P1_SH: HY3000-hanwckf/diy-part1.sh
   DIY_P2_SH: HY3000-hanwckf/diy-part2.sh
+  DIY_P3_SH: HY3000-hanwckf/diy-part3.sh
   SSH_ACTIONS: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -112,6 +114,7 @@ jobs:
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install $(cat $GITHUB_WORKSPACE/depends/${{ matrix.os }})
+        sudo -E apt-get -qq install rename
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
@@ -160,24 +163,13 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
-    - name: 设置HY3000的eMMC使用highspeed
-      if: github.event.inputs.EMMC_SPEED == 'true'
+    - name: 加载config & DIY_P3_SH
+      if: github.event.inputs.OPENCLASH == 'true'
       run: |
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_P3_SH
         cd openwrt
-        if ! grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
-                sed -i -e '/bus-width = <8>;/ a\	cap-mmc-highspeed;' "${{ env.HY3000_DTS_FILE }}"
-        fi
-
-    - name: 设置HY3000的eMMC使用26MHz
-      if: github.event.inputs.EMMC_SPEED == 'false'
-      run: |
-        cd openwrt
-        if grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
-                sed -i -e '/cap-mmc-highspeed;/d' "${{ env.HY3000_DTS_FILE }}"
-        fi
-        if grep -q 'max-frequency = <52000000>;' "${{ env.HY3000_DTS_FILE }}"; then
-                sed -i -e 's/max-frequency = <52000000>; /max-frequency = <26000000>;/' "${{ env.HY3000_DTS_FILE }}"
-        fi
+        $GITHUB_WORKSPACE/$DIY_P3_SH
 
     - name: 设置LAN IP地址（路由器登录地址）
       run: |
@@ -208,25 +200,22 @@ jobs:
         fi
         echo "Use WiFi Driver: $wifi_driver-fw-$firmware"
 
-    - name: 设置USB接口
+    - name: 设置eMMC频率为26MHz
+      if: github.event.inputs.EMMC_SPEED == 'false'
       run: |
-          cd openwrt
-          if [ "${{ github.event.inputs.USB }}" == "USB2" ]; then
-            echo "使用默认 USB2 配置"
-          elif [ "${{ github.event.inputs.USB }}" == "disabled" ]; then
-            if grep -q 'status = "okay"' "${{ env.HY3000_DTS_FILE }}"; then
-              sed -i 's/status = "okay"/status = "disabled"/' "${{ env.HY3000_DTS_FILE }}"
-              echo "已禁用 USB 接口"
-            fi
-          elif [ "${{ github.event.inputs.USB }}" == "remove" ]; then
-            if grep -q '&xhci {' "${{ env.HY3000_DTS_FILE }}"; then
-              sed -i '/&xhci {/,/};/d' "${{ env.HY3000_DTS_FILE }}"
-              echo "已从设备树中移除 USB 接口"
-            fi
-          else
-            echo "使用默认 USB2 配置"
-          fi
-          echo "USB Interface: ${{ github.event.inputs.USB }}"
+        cd openwrt
+        if grep -q 'cap-mmc-highspeed' "${{ env.HY3000_DTS_FILE }}"; then
+                sed -i -e '/cap-mmc-highspeed;/d' "${{ env.HY3000_DTS_FILE }}"
+        fi
+        if grep -q 'max-frequency = <52000000>;' "${{ env.HY3000_DTS_FILE }}"; then
+                sed -i -e 's/max-frequency = <52000000>; /max-frequency = <26000000>;/' "${{ env.HY3000_DTS_FILE }}"
+        fi
+
+    - name: 禁用USB接口
+      if: github.event.inputs.USB == 'false'
+      run: |
+        cd openwrt
+        sed -i '/&xhci {/,/};/ s/status = "okay"/status = "disabled"/' "${{ env.HY3000_DTS_FILE }}"
 
     - name: 使用nx30pro的高功率eeprom并固定WiFi MAC地址
       if: github.event.inputs.EEPROM == 'true'
@@ -321,11 +310,13 @@ jobs:
         mapfile -t devices < <(grep '^CONFIG_TARGET_DEVICE.*=y' openwrt/.config | sed -r 's/.*DEVICE_(.*)=y/\1/')
         cd openwrt/bin/targets/*/*
         rm -rf packages
-        sudo -E apt-get -qq install rename
         for val in "${devices[@]}"; do
           rename "s/.*${val}/${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${val}${{ env.WIFI_VERSION }}${{ env.EEPROM }}${{ env.BUILD_DOCKERMAN }}/" *
           echo "$val"
         done
+        echo "当前路径：$PWD"
+        echo "当前路径下的文件："
+        ls -l
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -364,6 +355,16 @@ jobs:
                 echo "- eMMC使用highspeed" >> release.txt
         else
                 echo "- eMMC使用26MHz" >> release.txt
+        fi
+        if [[ "${{ github.event.inputs.USB }}" == 'false' ]]; then
+                echo "- USB接口已禁用" >> release.txt
+        else
+                echo "- USB接口已启用" >> release.txt
+        fi
+        if [[ "${{ github.event.inputs.OPENCLASH }}" == 'true' ]]; then
+                echo "- 已编译科学上网" >> release.txt
+        else
+                echo "- 未编译科学上网" >> release.txt
         fi
         echo "release_tag=${{ env.FILE_DATE }}-${{ env.OPENWRT_NAME }}-${{ env.UPLOAD_TAG_NAME }}${{ env.WIFI_VERSION }}${{ env.EEPROM }}${{ env.BUILD_DOCKERMAN }}" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
