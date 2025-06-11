@@ -50,8 +50,8 @@ on:
         type: boolean
       USB:
         description: 'Use USB Interface'
-        required: true
-        default: true
+        required: false
+        default: false
         type: boolean
       DOCKERMAN:
         description: 'Build luci-app-dockerman'
